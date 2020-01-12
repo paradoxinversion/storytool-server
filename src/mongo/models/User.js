@@ -10,7 +10,6 @@ const UserSchema = new Schema({
 });
 
 UserSchema.methods.checkPassword = async function(password) {
-  console.log(password);
   return bcrypt.compare(password, this.password);
 };
 

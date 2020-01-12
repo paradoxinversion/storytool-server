@@ -1,7 +1,9 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-const UserExistsError = require("../../../errors/UserExistsError");
-const createUser = async (username, password) => {
+const { UserExistsError, NoUserError } = require("../../../errors/index");
+
+const createUser = async ({ username, password }) => {
+  console.log(username, password);
   const user = await User.findOne({ username });
   if (user) {
     // User exists
@@ -14,9 +16,20 @@ const createUser = async (username, password) => {
 
   const newUser = new User({ username, password: hashedPassword });
   newUser.save();
-  return true;
+  return newUser;
 };
 
+const readUser = async ({ username }) => {
+  console.log(username);
+  const user = await User.findOne({ username });
+  if (!user) {
+    const error = new NoUserError(username);
+    throw error;
+  }
+
+  return user;
+};
 module.exports = {
-  createUser
+  createUser,
+  readUser
 };
