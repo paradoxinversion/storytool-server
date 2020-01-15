@@ -1,8 +1,8 @@
 const { Story, defaultFields } = require("../models/Story");
+const jwt = require("jsonwebtoken");
 
-const createStory = async ({ owner, title, synopsis }) => {
-  console.log("hey");
-  console.log(Array.isArray(defaultFields));
+const createStory = async ({ token, title, synopsis }) => {
+  const owner = jwt.verify(token, "dev").user;
   try {
     const newStory = new Story({
       title,
@@ -10,13 +10,11 @@ const createStory = async ({ owner, title, synopsis }) => {
       owner,
       defaultFields
     });
-    // newStory.defaultFields = defaultFields;
 
     newStory.updateDefaultFieldValue("title", title);
     newStory.updateDefaultFieldValue("synopsis", synopsis);
-    // newStory.markModified(defaultFields);
     await newStory.save();
-    return true;
+    return newStory;
   } catch (e) {
     throw e;
   }
@@ -32,7 +30,14 @@ const readStory = async ({ storyId }) => {
   return story;
 };
 
+const getUserStories = async ({ token }) => {
+  const userId = jwt.verify(token, "dev").user;
+  const userStories = await Story.find({ owner: userId });
+  return userStories;
+};
+
 module.exports = {
   createStory,
-  readStory
+  readStory,
+  getUserStories
 };

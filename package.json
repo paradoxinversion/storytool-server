@@ -7,6 +7,7 @@
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^3.0.7",
+    "cookie-parser": "^1.4.4",
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-graphql": "^0.9.0",
@@ -23,6 +24,7 @@
     "mocha": "^7.0.0"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "dev": "nodemon ./src/server.js"
   }
 }

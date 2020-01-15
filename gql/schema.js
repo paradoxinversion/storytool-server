@@ -2,34 +2,52 @@ const { buildSchema } = require("graphql");
 const User = require("./user");
 const Story = require("./story");
 const Field = require("./field");
+const FieldInput = require("./fieldInput");
 const StoryPart = require("./storyPart");
 const { createUser, readUser } = require("../src/mongo/dbActions/User");
-const { readStory, createStory } = require("../src/mongo/dbActions/Story");
+const {
+  readStory,
+  createStory,
+  getUserStories
+} = require("../src/mongo/dbActions/Story");
 const {
   readStoryPart,
-  createStoryPart
+  createStoryPart,
+  getStoryParts,
+  updateStoryPart
 } = require("../src/mongo/dbActions/StoryPart");
 const schema = buildSchema(`
   type Query {
     user(username: String!): User
     story(storyId: String!): Story
-    storyPart(storyPartId: String!): StoryPart
+    userStories(token: String!): [Story]
+    storyPart(token: String!, storyPartId: String!): StoryPart
+    storyParts(token: String!, storyId: String!): [StoryPart]
   },
   type Mutation {
     createUser(username: String!, password: String!): User
-    createStory(owner: String!, title: String!, synopsis: String): Story
-    createStoryPart(owner: String!, title: String!, synopsis: String): Story
+    createStory(token: String!, title: String!, synopsis: String): Story
+    createStoryPart(token: String!, story: String!, title: String!, text: String): StoryPart
+    updateStoryPart(token: String!, storyPartId: String!, updatedFields: [Field]): StoryPart
   },
   ${User},
   ${Field},
+  ${FieldInput},
   ${Story},
   ${StoryPart}
 `);
+
+// Avoid using shorthand values for absolute clarity
 const root = {
-  user: readUser, // Resolver function to return user with specific id,
+  user: readUser,
   story: readStory,
   createStory: createStory,
-  createUser: createUser
+  createUser: createUser,
+  userStories: getUserStories,
+  storyParts: getStoryParts,
+  createStoryPart: createStoryPart,
+  storyPart: readStoryPart,
+  updateStoryPart: updateStoryPart
 };
 
 module.exports = { schema, root };

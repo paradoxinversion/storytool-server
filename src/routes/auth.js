@@ -10,7 +10,7 @@ router.post("/", passport.authenticate("local"), (req, res) => {
     },
     "dev"
   );
-  res.cookie("storytool-user", token).send("woo");
+  res.cookie("storytool-user", token).json({ login: "success", token });
 });
 
 module.exports = router;
