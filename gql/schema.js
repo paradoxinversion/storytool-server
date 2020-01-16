@@ -14,7 +14,8 @@ const {
   readStoryPart,
   createStoryPart,
   getStoryParts,
-  updateStoryPart
+  updateStoryPart,
+  deleteStoryPart
 } = require("../src/mongo/dbActions/StoryPart");
 const schema = buildSchema(`
   type Query {
@@ -28,7 +29,8 @@ const schema = buildSchema(`
     createUser(username: String!, password: String!): User
     createStory(token: String!, title: String!, synopsis: String): Story
     createStoryPart(token: String!, story: String!, title: String!, text: String): StoryPart
-    updateStoryPart(token: String!, storyPartId: String!, updatedFields: [Field]): StoryPart
+    updateStoryPart(token: String!, storyPartId: String!, updatedFields: [FieldInput]): StoryPart
+    deleteStoryPart(token: String!, storyPartId: String!): StoryPart
   },
   ${User},
   ${Field},
@@ -47,7 +49,8 @@ const root = {
   storyParts: getStoryParts,
   createStoryPart: createStoryPart,
   storyPart: readStoryPart,
-  updateStoryPart: updateStoryPart
+  updateStoryPart: updateStoryPart,
+  deleteStoryPart: deleteStoryPart
 };
 
 module.exports = { schema, root };

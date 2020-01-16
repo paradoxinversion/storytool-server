@@ -74,9 +74,26 @@ const updateStoryPart = async ({ token, storyPartId, updatedFields }) => {
   await storyPart.save();
   return storyPart;
 };
+
+const deleteStoryPart = async ({ token, storyPartId }) => {
+  const { user } = jwt.verify(token, "dev");
+  const storyPart = await StoryPart.findById(storyPartId);
+  if (!storyPart) {
+    const error = new Error(`Error finding story parts for ${storyId}`);
+    throw error;
+  }
+  if (storyPart.owner.toString() !== user) {
+    const error = new Error("User unauthorized to access this story part");
+    throw error;
+  }
+
+  const deletionResult = StoryPart.findByIdAndDelete(storyPartId);
+  return deletionResult;
+};
 module.exports = {
   createStoryPart,
   readStoryPart,
   getStoryParts,
-  updateStoryPart
+  updateStoryPart,
+  deleteStoryPart
 };
