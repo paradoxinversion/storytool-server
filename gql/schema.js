@@ -8,14 +8,14 @@ const { createUser, readUser } = require("../src/mongo/dbActions/User");
 const {
   readStory,
   createStory,
-  getUserStories
+  getUserStories,
 } = require("../src/mongo/dbActions/Story");
 const {
   readStoryPart,
   createStoryPart,
   getStoryParts,
   updateStoryPart,
-  deleteStoryPart
+  deleteStoryPart,
 } = require("../src/mongo/dbActions/StoryPart");
 const schema = buildSchema(`
   type Query {
@@ -29,7 +29,7 @@ const schema = buildSchema(`
     createUser(username: String!, password: String!): User
     createStory(token: String!, title: String!, synopsis: String): Story
     createStoryPart(token: String!, story: String!, title: String!, text: String): StoryPart
-    updateStoryPart(token: String!, storyPartId: String!, updatedFields: [FieldInput]): StoryPart
+    updateStoryPart(token: String!, storyPartId: String!, title: String, text: String): StoryPart
     deleteStoryPart(token: String!, storyPartId: String!): StoryPart
   },
   ${User},
@@ -50,7 +50,7 @@ const root = {
   createStoryPart: createStoryPart,
   storyPart: readStoryPart,
   updateStoryPart: updateStoryPart,
-  deleteStoryPart: deleteStoryPart
+  deleteStoryPart: deleteStoryPart,
 };
 
 module.exports = { schema, root };

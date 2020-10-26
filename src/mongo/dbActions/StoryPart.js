@@ -1,6 +1,7 @@
 const { StoryPart, defaultFields } = require("../models/StoryPart");
 const { Story } = require("../models/Story");
 const jwt = require("jsonwebtoken");
+
 const createStoryPart = async ({ token, story, title, text }) => {
   console.log("creating part", token, story, title, text);
   const { user } = jwt.verify(token, "dev");
@@ -11,13 +12,12 @@ const createStoryPart = async ({ token, story, title, text }) => {
     const newStoryPart = new StoryPart({
       owner: user,
       story,
+      title,
+      text,
       order,
       storyAssetType: 0,
-      defaultFields
+      defaultFields,
     });
-    newStoryPart.updateDefaultFieldValue("title", title);
-    newStoryPart.updateDefaultFieldValue("text", text);
-    console.log(newStoryPart);
     await newStoryPart.save();
     return newStoryPart;
   } catch (e) {
@@ -58,7 +58,7 @@ const getStoryParts = async ({ token, storyId }) => {
   return storyParts;
 };
 
-const updateStoryPart = async ({ token, storyPartId, updatedFields }) => {
+const updateStoryPart = async ({ token, storyPartId, title, text }) => {
   const { user } = jwt.verify(token, "dev");
   const storyPart = await StoryPart.findById(storyPartId);
   if (!storyPart) {
@@ -70,9 +70,14 @@ const updateStoryPart = async ({ token, storyPartId, updatedFields }) => {
     throw error;
   }
 
-  storyPart.defaultFields = updatedFields;
-  await storyPart.save();
-  return storyPart;
+  const update = await StoryPart.findByIdAndUpdate(
+    storyPartId,
+    { title, text },
+    { omitUndefined: true, new: true }
+  );
+
+  await update.save();
+  return update;
 };
 
 const deleteStoryPart = async ({ token, storyPartId }) => {
@@ -95,5 +100,5 @@ module.exports = {
   readStoryPart,
   getStoryParts,
   updateStoryPart,
-  deleteStoryPart
+  deleteStoryPart,
 };

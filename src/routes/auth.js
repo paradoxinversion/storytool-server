@@ -10,7 +10,8 @@ router.post("/", passport.authenticate("local"), (req, res) => {
     },
     "dev"
   );
-  res.cookie("storytool-user", token).json({ login: "success", token });
+  console.log(req.user)
+  res.cookie("storytool-user", token).json({ login: "success", token, username: req.user.username });
 });
 
 module.exports = router;

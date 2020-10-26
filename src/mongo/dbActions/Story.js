@@ -11,8 +11,6 @@ const createStory = async ({ token, title, synopsis }) => {
       defaultFields
     });
 
-    newStory.updateDefaultFieldValue("title", title);
-    newStory.updateDefaultFieldValue("synopsis", synopsis);
     await newStory.save();
     return newStory;
   } catch (e) {

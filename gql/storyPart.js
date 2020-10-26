@@ -4,6 +4,7 @@ module.exports = `
     owner: String
     order: Int
     story: String
-    defaultFields: [Field]
+    title: String
+    text: String
   }
 `;
